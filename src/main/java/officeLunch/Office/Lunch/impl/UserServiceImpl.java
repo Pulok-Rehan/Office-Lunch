@@ -2,7 +2,7 @@ package officeLunch.Office.Lunch.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import officeLunch.Office.Lunch.model.User;
+import officeLunch.Office.Lunch.model.Customers;
 import officeLunch.Office.Lunch.repository.UserRepository;
 import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.UserService;
@@ -17,10 +17,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public CommonResponse addUser(User user) throws JsonProcessingException {
+    public CommonResponse addUser(Customers customers) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            User newuser = userRepository.save(user);
+            Customers newuser = userRepository.save(customers);
             return CommonResponse.builder()
                     .message("User created successfully!")
                     .hasError(false)
@@ -34,14 +34,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public CommonResponse updateUser(User user) throws JsonProcessingException {
+    public CommonResponse updateUser(Customers customers) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            User updatedUser = userRepository.save(user);
+            Customers updatedCustomers = userRepository.save(customers);
             return CommonResponse.builder()
                     .message("User updated successfully!")
                     .hasError(false)
-                    .content(objectMapper.writeValueAsString(user)).build();
+                    .content(objectMapper.writeValueAsString(customers)).build();
         }
         catch (JsonProcessingException e){
             e.printStackTrace();

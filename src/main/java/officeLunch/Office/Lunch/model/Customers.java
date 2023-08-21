@@ -6,7 +6,7 @@ import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @AllArgsConstructor
@@ -14,13 +14,12 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @Table(name = "USERS")
 @Entity
-public class User {
+public class Customers {
     @Id
     private long id;
     private String name;
     private Boolean hasDiscount;
     private long discountAmount;
-    @JoinColumn(name = "orgId")
     @OneToOne
     private Organisation organisation;
 }

@@ -4,6 +4,7 @@ import officeLunch.Office.Lunch.model.Item;
 import officeLunch.Office.Lunch.model.LunchPackage;
 import officeLunch.Office.Lunch.repository.PackageRepository;
 import officeLunch.Office.Lunch.service.PackageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Optional;
 @Service
 public class PackageServiceImpl implements PackageService {
     private final PackageRepository packageRepository;
+    @Autowired
     private final ItemServiceImpl itemService;
 
     public PackageServiceImpl(PackageRepository packageRepository, ItemServiceImpl itemService) {

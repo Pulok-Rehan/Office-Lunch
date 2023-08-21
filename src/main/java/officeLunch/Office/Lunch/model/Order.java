@@ -22,5 +22,5 @@ public class Order {
     private LunchPackage lunchPackage;
     @JoinColumn(name = "userId")
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    private User user;
+    private Customers customers;
 }

@@ -1,5 +1,6 @@
 package officeLunch.Office.Lunch.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,8 +14,12 @@ import java.util.List;
 @Builder
 @Data
 @Table(name = "PACKAGES")
+@Entity
 public class LunchPackage {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Item> items;
     private long totalPrice;
     private long discount;

@@ -8,10 +8,11 @@ import officeLunch.Office.Lunch.model.Order;
 import officeLunch.Office.Lunch.repository.OrderRepository;
 import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.OrderService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 
