@@ -8,6 +8,8 @@ import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.AdminService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AdminServiceImpl implements AdminService {
     private final AdminRepository adminRepository;
@@ -65,5 +67,21 @@ public class AdminServiceImpl implements AdminService {
                     .hasError(true)
                     .message("Could not update Admin!").build();
         }
+    }
+
+    @Override
+    public CommonResponse getAdmins() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Admin> admins = adminRepository.findAll();
+        if (admins.size()<1){
+            return CommonResponse.builder()
+                    .hasError(true)
+                    .message("No admins found")
+                    .content(null).build();
+        }
+        return CommonResponse.builder()
+                .hasError(false)
+                .message("Admins found successfully!")
+                .content(objectMapper.writeValueAsString(admins)).build();
     }
 }

@@ -10,4 +10,5 @@ public interface OrderService {
     CommonResponse editOrder(Order order) throws JsonProcessingException;
     CommonResponse getAllOrders() throws JsonProcessingException;
     CommonResponse getOrder(long orderId) throws JsonProcessingException;
+    CommonResponse deleteOrder(long orderId);
 }

@@ -89,4 +89,22 @@ public class OrderServiceImpl implements OrderService {
                     .hasError(true).build();
         }
     }
+
+    @Override
+    public CommonResponse deleteOrder(long orderId) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try{
+            orderRepository.deleteById(orderId);
+            return CommonResponse.builder()
+                    .hasError(false)
+                    .message("Order deleted successfully!")
+                    .content("Deleted ID is "+ String.valueOf(orderId)).build();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return CommonResponse.builder()
+                    .hasError(true)
+                    .message("Could not delete order!").build();
+        }
+    }
 }

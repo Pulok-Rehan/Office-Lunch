@@ -1,9 +1,13 @@
 package officeLunch.Office.Lunch.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import officeLunch.Office.Lunch.enums.MainDish;
 import officeLunch.Office.Lunch.enums.SecondaryDish;
+import officeLunch.Office.Lunch.model.Item;
 import officeLunch.Office.Lunch.repository.ItemRepository;
+import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.ItemService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,7 @@ public class ItemServiceImpl implements ItemService {
     private String priceOfBeef;
     @Value("${items.price.fish}")
     private String priceOfFish;
+    private static long price;
     private final ItemRepository itemRepository;
 
     public ItemServiceImpl(ItemRepository itemRepository) {
@@ -35,10 +40,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Long getPrice(MainDish mainDish, SecondaryDish secondaryDish) {
-        Long price = null;
         if(mainDish == null || secondaryDish == null){
             log.info("MAIN DISH OR SECONDARY DISH CAN NOT BE NULL");
-            return null;
         }
         else {
             if (mainDish.equals(MainDish.PLAIN_RICE) || mainDish.equals(MainDish.POLAO) || mainDish.equals(MainDish.KHICHURI)){
@@ -64,5 +67,25 @@ public class ItemServiceImpl implements ItemService {
 
         }
         return price;
+    }
+
+    @Override
+    public CommonResponse addItem(Item item) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        if (item.getPrice() == 0){
+            price = this.getPrice(item.getMainDish(), item.getSecondaryDish());
+            item.setPrice(price);
+        }
+        Item newItem = itemRepository.save(item);
+        if (newItem==null){
+            return CommonResponse.builder()
+                    .hasError(true)
+                    .message("Could not add Item")
+                    .content(objectMapper.writeValueAsString(newItem)).build();
+        }
+        return CommonResponse.builder()
+                .hasError(false)
+                .message("Item added successfully!")
+                .content(objectMapper.writeValueAsString(newItem)).build();
     }
 }
