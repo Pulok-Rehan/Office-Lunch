@@ -21,6 +21,6 @@ public class LunchPackage {
     private long id;
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Item> items;
-    private long totalPrice;
-    private long discount;
+    private double totalPrice;
+    private double discount;
 }

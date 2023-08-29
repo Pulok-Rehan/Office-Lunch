@@ -1,5 +1,6 @@
 package officeLunch.Office.Lunch.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import officeLunch.Office.Lunch.model.Item;
 import officeLunch.Office.Lunch.model.LunchPackage;
 import officeLunch.Office.Lunch.repository.PackageRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+@Slf4j
 @Service
 public class PackageServiceImpl implements PackageService {
     private final PackageRepository packageRepository;
@@ -35,14 +37,24 @@ public class PackageServiceImpl implements PackageService {
     }
 
     @Override
-    public Long getTotalPriceOfPackage(long packageId) {
+    public double getTotalPriceOfPackage(long packageId) {
         Optional<LunchPackage> lunchPackage = packageRepository.findById(packageId);
-        Long totalPrice = null;
+        double totalPrice = 0;
         if (lunchPackage.isPresent()){
             for(Item item: lunchPackage.get().getItems()){
                 totalPrice += item.getPrice();
             }
+            totalPrice = totalPrice * this.getDiscountedPrice(lunchPackage.get().getDiscount());
+            log.info("Lunch Package price is {} and discount is {}%", totalPrice,
+                    getDiscountedPrice(lunchPackage.get().getDiscount()));
         }
         return totalPrice;
+    }
+    private double getDiscountedPrice(double discount){
+        double discountPercentage = 1;
+        if(discount !=0){
+            discountPercentage = discount/100;
+        }
+        return discountPercentage;
     }
 }

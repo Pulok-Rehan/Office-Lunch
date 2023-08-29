@@ -7,7 +7,7 @@ import java.util.List;
 public interface PackageService {
     LunchPackage getPackage(long id) throws Exception;
     List<LunchPackage> getAllPackages();
-    Long getTotalPriceOfPackage(long packageId);
+    double getTotalPriceOfPackage(long packageId);
 
 
 }

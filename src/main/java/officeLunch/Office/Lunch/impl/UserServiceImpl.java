@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
             return CommonResponse.builder()
                     .message("User updated successfully!")
                     .hasError(false)
-                    .content(objectMapper.writeValueAsString(customers)).build();
+                    .content(objectMapper.writeValueAsString(updatedCustomers)).build();
         }
         catch (JsonProcessingException e){
             e.printStackTrace();
