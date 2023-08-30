@@ -1,6 +1,7 @@
 package officeLunch.Office.Lunch.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import officeLunch.Office.Lunch.OrderDto;
 import officeLunch.Office.Lunch.model.LunchPackage;
 import officeLunch.Office.Lunch.model.Order;
 import officeLunch.Office.Lunch.response.CommonResponse;
@@ -21,8 +22,8 @@ public class OrderController {
     }
 
     @PostMapping(path = "/orders")
-    public CommonResponse createOrder(@RequestBody LunchPackage lunchPackage) throws JsonProcessingException {
-        return orderService.createOrder(lunchPackage);
+    public CommonResponse createOrder(@RequestBody OrderDto orderDto) throws JsonProcessingException {
+        return orderService.createOrder(orderDto);
     }
 
     @PutMapping(path = "/orders")

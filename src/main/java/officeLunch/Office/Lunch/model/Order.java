@@ -18,9 +18,9 @@ public class Order {
     private Long id;
     private double totalAmount;
     @JoinColumn(name = "packageId")
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @OneToOne()
     private LunchPackage lunchPackage;
     @JoinColumn(name = "userId")
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @OneToOne
     private Customers customers;
 }

@@ -20,6 +20,6 @@ public class Customers {
     private String name;
     private Boolean hasDiscount;
     private long discountAmount;
-    @OneToMany
+    @ManyToOne
     private Organisation organisation;
 }

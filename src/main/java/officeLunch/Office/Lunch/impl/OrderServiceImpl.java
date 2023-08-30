@@ -2,10 +2,13 @@ package officeLunch.Office.Lunch.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.dynalink.linker.LinkerServices;
+import officeLunch.Office.Lunch.OrderDto;
+import officeLunch.Office.Lunch.model.Customers;
 import officeLunch.Office.Lunch.model.LunchPackage;
 import officeLunch.Office.Lunch.model.Order;
 import officeLunch.Office.Lunch.repository.OrderRepository;
+import officeLunch.Office.Lunch.repository.PackageRepository;
+import officeLunch.Office.Lunch.repository.UserRepository;
 import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.OrderService;
 import org.springframework.stereotype.Service;
@@ -15,23 +18,35 @@ import java.util.Optional;
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
+    private final PackageRepository packageRepository;
+    private final UserRepository userRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, PackageRepository packageRepository, UserRepository userRepository) {
         this.orderRepository = orderRepository;
+        this.packageRepository = packageRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public CommonResponse createOrder(LunchPackage lunchPackage) throws JsonProcessingException {
+    public CommonResponse createOrder(OrderDto orderDto) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        if(lunchPackage==null){
-            return CommonResponse.builder()
-                    .hasError(true)
-                    .message("Could not create order").build();
+        if(orderDto==null){
+            return this.universalResponseForFailedOrder();
         }
         else {
+            Optional<LunchPackage> orderedLunchPackage = packageRepository.findById(orderDto.getLunchPackageId());
+            if (!orderedLunchPackage.isPresent()){
+                return this.universalResponseForFailedOrder();
+            }
+            Optional<Customers> orderingCustomer = userRepository.findById(orderDto.getCustomerId());
+            if (!orderingCustomer.isPresent()){
+                return this.universalResponseForFailedOrder();
+            }
             Order newOrder = Order.builder()
-                    .lunchPackage(lunchPackage)
-                    .totalAmount(lunchPackage.getTotalPrice()).build();
+                    .lunchPackage(orderedLunchPackage.get())
+                    .totalAmount(orderedLunchPackage.get().getTotalPrice())
+                    .customers(orderingCustomer.get())
+                    .build();
             newOrder = orderRepository.save(newOrder);
             return CommonResponse.builder()
                     .hasError(false)
@@ -106,5 +121,11 @@ public class OrderServiceImpl implements OrderService {
                     .hasError(true)
                     .message("Could not delete order!").build();
         }
+    }
+
+    private CommonResponse universalResponseForFailedOrder(){
+        return CommonResponse.builder()
+                .hasError(true)
+                .message("Could not create order").build();
     }
 }
