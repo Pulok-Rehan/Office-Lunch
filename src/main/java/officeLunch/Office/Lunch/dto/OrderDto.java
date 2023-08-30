@@ -1,4 +1,4 @@
-package officeLunch.Office.Lunch;
+package officeLunch.Office.Lunch.dto;
 
 import lombok.Data;
 

@@ -2,7 +2,7 @@ package officeLunch.Office.Lunch.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import officeLunch.Office.Lunch.OrderDto;
+import officeLunch.Office.Lunch.dto.OrderDto;
 import officeLunch.Office.Lunch.model.Customers;
 import officeLunch.Office.Lunch.model.LunchPackage;
 import officeLunch.Office.Lunch.model.Order;
@@ -42,12 +42,12 @@ public class OrderServiceImpl implements OrderService {
             if (!orderingCustomer.isPresent()){
                 return this.universalResponseForFailedOrder();
             }
-            Order newOrder = Order.builder()
+            Order newOrder = orderRepository.save(
+                    Order.builder()
                     .lunchPackage(orderedLunchPackage.get())
                     .totalAmount(orderedLunchPackage.get().getTotalPrice())
                     .customers(orderingCustomer.get())
-                    .build();
-            newOrder = orderRepository.save(newOrder);
+                    .build());
             return CommonResponse.builder()
                     .hasError(false)
                     .message("Order created!")

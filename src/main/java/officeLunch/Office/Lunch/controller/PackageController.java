@@ -2,6 +2,7 @@ package officeLunch.Office.Lunch.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import officeLunch.Office.Lunch.dto.PackageDto;
 import officeLunch.Office.Lunch.model.LunchPackage;
 import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.PackageService;
@@ -51,5 +52,9 @@ public class PackageController {
                     .message("Packages found for today")
                     .content(objectMapper.writeValueAsString(lunchPackage)).build();
         }
+    }
+    @PostMapping(path = "/addPackage")
+    public CommonResponse addPackage(@RequestBody PackageDto packageDto) throws JsonProcessingException {
+        return packageService.addPackage(packageDto);
     }
 }

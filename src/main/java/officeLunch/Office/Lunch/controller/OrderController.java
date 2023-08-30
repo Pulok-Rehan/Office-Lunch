@@ -1,8 +1,7 @@
 package officeLunch.Office.Lunch.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import officeLunch.Office.Lunch.OrderDto;
-import officeLunch.Office.Lunch.model.LunchPackage;
+import officeLunch.Office.Lunch.dto.OrderDto;
 import officeLunch.Office.Lunch.model.Order;
 import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.OrderService;

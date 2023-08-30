@@ -1,24 +1,32 @@
 package officeLunch.Office.Lunch.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import officeLunch.Office.Lunch.dto.PackageDto;
 import officeLunch.Office.Lunch.model.Item;
 import officeLunch.Office.Lunch.model.LunchPackage;
+import officeLunch.Office.Lunch.repository.ItemRepository;
 import officeLunch.Office.Lunch.repository.PackageRepository;
+import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.PackageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Slf4j
 @Service
 public class PackageServiceImpl implements PackageService {
     private final PackageRepository packageRepository;
+    private final ItemRepository itemRepository;
     @Autowired
     private final ItemServiceImpl itemService;
 
-    public PackageServiceImpl(PackageRepository packageRepository, ItemServiceImpl itemService) {
+    public PackageServiceImpl(PackageRepository packageRepository, ItemRepository itemRepository, ItemServiceImpl itemService) {
         this.packageRepository = packageRepository;
+        this.itemRepository = itemRepository;
         this.itemService = itemService;
     }
 
@@ -44,17 +52,49 @@ public class PackageServiceImpl implements PackageService {
             for(Item item: lunchPackage.get().getItems()){
                 totalPrice += item.getPrice();
             }
-            totalPrice = totalPrice * this.getDiscountedPrice(lunchPackage.get().getDiscount());
+            totalPrice =totalPrice - totalPrice * this.getDiscountedPrice(lunchPackage.get().getDiscount());
             log.info("Lunch Package price is {} and discount is {}%", totalPrice,
                     getDiscountedPrice(lunchPackage.get().getDiscount()));
         }
         return totalPrice;
     }
+
+    @Override
+    public CommonResponse addPackage(PackageDto packageDto) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Item> items = new ArrayList<>();
+        if(packageDto.getItemIdlist().isEmpty()){
+            return this.universalPackageFailedResponse();
+        }
+        for (Long itemId: packageDto.getItemIdlist()){
+            Optional<Item> itemOptional = itemRepository.findById(itemId);
+            items.add(itemOptional.get());
+        }
+        LunchPackage lunchPackage = packageRepository.save(LunchPackage.builder()
+                .items(items)
+                .discount(packageDto.getDiscount())
+                .totalPrice(0)
+                .build());
+        lunchPackage.setTotalPrice(this.getTotalPriceOfPackage(lunchPackage.getId()));
+        lunchPackage = packageRepository.save(lunchPackage);
+
+        return CommonResponse.builder()
+                .hasError(false)
+                .message("Package added succesfully")
+                .content(objectMapper.writeValueAsString(lunchPackage)).build();
+    }
+
     private double getDiscountedPrice(double discount){
         double discountPercentage = 1;
         if(discount !=0){
             discountPercentage = discount/100;
         }
         return discountPercentage;
+    }
+    private CommonResponse universalPackageFailedResponse(){
+        return CommonResponse.builder()
+                .hasError(true)
+                .message("Could not add items to the package")
+                .content(null).build();
     }
 }

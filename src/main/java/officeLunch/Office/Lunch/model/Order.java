@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 @Table(name = "ORDERS")
 public class Order {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private double totalAmount;
     @JoinColumn(name = "packageId")
-    @OneToOne()
+    @ManyToOne
     private LunchPackage lunchPackage;
     @JoinColumn(name = "userId")
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Customers customers;
 }
