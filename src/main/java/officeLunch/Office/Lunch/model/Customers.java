@@ -22,4 +22,5 @@ public class Customers {
     private double discountAmount;
     @ManyToOne
     private Organisation organisation;
+    private Boolean belongstoOrganisation;
 }

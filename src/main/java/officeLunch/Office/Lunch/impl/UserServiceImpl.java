@@ -36,7 +36,8 @@ public class UserServiceImpl implements UserService {
                     customers.getDiscountAmount() : Double.valueOf(customerOrganisation.get().getDiscount()));
         }
         else {
-            return this.universalCustomerFailedResponse();
+            customers.setOrganisation(new Organisation());
+            customers.setBelongstoOrganisation(false);
         }
         try {
             Customers newuser = userRepository.save(customers);
