@@ -32,19 +32,11 @@ public class UserServiceImpl implements UserService {
         if (customerOrganisation.isPresent()){
             customers.setOrganisation(customerOrganisation.get());
             customers.setHasDiscount(customerOrganisation.get().getHasDiscount());
+            customers.setDiscountAmount(customers.getDiscountAmount()>customerOrganisation.get().getDiscount()?
+                    customers.getDiscountAmount() : Double.valueOf(customerOrganisation.get().getDiscount()));
         }
         else {
             return this.universalCustomerFailedResponse();
-        }
-        if(customers.getHasDiscount()){
-            if (customers.getDiscountAmount() == 0){
-                return CommonResponse.builder()
-                        .hasError(true)
-                        .message("Discount amount can not be zero while customer has discount").build();
-            }
-        }
-        else {
-            customers.setDiscountAmount(Long.valueOf(0));
         }
         try {
             Customers newuser = userRepository.save(customers);

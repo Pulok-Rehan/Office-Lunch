@@ -19,6 +19,7 @@ public class Organisation {
     private long id;
     private String name;
     private Boolean hasDiscount;
+    private int discount;
     @Enumerated(EnumType.STRING)
     private Location location;
     @OneToOne

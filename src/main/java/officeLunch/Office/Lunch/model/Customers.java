@@ -19,7 +19,7 @@ public class Customers {
     private long id;
     private String name;
     private Boolean hasDiscount;
-    private long discountAmount;
+    private double discountAmount;
     @ManyToOne
     private Organisation organisation;
 }

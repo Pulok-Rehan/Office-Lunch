@@ -30,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public CommonResponse createOrder(OrderDto orderDto) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
+        double totalAmount = 0;
         if(orderDto==null){
             return this.universalResponseForFailedOrder();
         }
@@ -42,10 +43,14 @@ public class OrderServiceImpl implements OrderService {
             if (!orderingCustomer.isPresent()){
                 return this.universalResponseForFailedOrder();
             }
+            if (orderingCustomer.get().getHasDiscount()){
+                totalAmount = orderedLunchPackage.get().getTotalPrice() - (orderedLunchPackage.get().getTotalPrice()*
+                        (orderingCustomer.get().getDiscountAmount()/100)+ orderedLunchPackage.get().getDiscountAmount());
+            }
             Order newOrder = orderRepository.save(
                     Order.builder()
                     .lunchPackage(orderedLunchPackage.get())
-                    .totalAmount(orderedLunchPackage.get().getTotalPrice())
+                    .totalAmount(totalAmount == 0  ? orderedLunchPackage.get().getTotalPrice() : totalAmount)
                     .customers(orderingCustomer.get())
                     .build());
             return CommonResponse.builder()

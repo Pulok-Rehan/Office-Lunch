@@ -52,9 +52,6 @@ public class PackageServiceImpl implements PackageService {
             for(Item item: lunchPackage.get().getItems()){
                 totalPrice += item.getPrice();
             }
-            totalPrice =totalPrice - totalPrice * this.getDiscountedPrice(lunchPackage.get().getDiscount());
-            log.info("Lunch Package price is {} and discount is {}%", totalPrice,
-                    getDiscountedPrice(lunchPackage.get().getDiscount()));
         }
         return totalPrice;
     }
@@ -74,8 +71,11 @@ public class PackageServiceImpl implements PackageService {
                 .items(items)
                 .discount(packageDto.getDiscount())
                 .totalPrice(0)
+                .discountAmount(0)
                 .build());
-        lunchPackage.setTotalPrice(this.getTotalPriceOfPackage(lunchPackage.getId()));
+        double totalPrice = this.getTotalPriceOfPackage(lunchPackage.getId());
+        lunchPackage.setTotalPrice(totalPrice);
+        lunchPackage.setDiscountAmount(totalPrice*this.getDiscountedPrice(packageDto.getDiscount()));
         lunchPackage = packageRepository.save(lunchPackage);
 
         return CommonResponse.builder()

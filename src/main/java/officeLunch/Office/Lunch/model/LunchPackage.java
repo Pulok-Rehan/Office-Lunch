@@ -22,5 +22,6 @@ public class LunchPackage {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Item> items;
     private double totalPrice;
+    private double discountAmount;
     private double discount;
 }
