@@ -48,21 +48,21 @@ public class ItemServiceImpl implements ItemService {
                 price = mainDish.equals(MainDish.PLAIN_RICE) ? Long.valueOf(priceOfPlainRice) : Long.valueOf(priceOfKhichuri);
                 if (secondaryDish.equals(SecondaryDish.CHICKEN)){
                     log.info("SELECTED MAIN DISH AND SECONDARY DISH ARE PLAIN RICE AND CHICKEN");
-                    price += Long.valueOf(priceOfChicken);
+                    price += Long.parseLong(priceOfChicken);
                 } else if (secondaryDish.equals(SecondaryDish.BEEF)) {
                     log.info("SELECTED MAIN DISH AND SECONDARY DISH ARE PLAIN RICE AND BEEF");
-                    price += Long.valueOf(priceOfBeef);
+                    price += Long.parseLong(priceOfBeef);
                 } else if (secondaryDish.equals(SecondaryDish.FISH)) {
                     log.info("SELECTED MAIN DISH AND SECONDARY DISH ARE PLAIN RICE AND FISH");
-                    price += Long.valueOf(priceOfFish);
+                    price += Long.parseLong(priceOfFish);
                 }
             } else if (mainDish.equals(MainDish.KACCHI)) {
                 log.info("KACCHI IS SELECTED FOR ORDERING");
-                price += Long.valueOf(priceOfKacchi);
+                price += Long.parseLong(priceOfKacchi);
             }
             else if (mainDish.equals(MainDish.TEHARI)) {
                 log.info("TEHARI IS SELECTED FOR ORDERING");
-                price += Long.valueOf(priceOfTehari);
+                price += Long.parseLong(priceOfTehari);
             }
 
         }
@@ -77,12 +77,6 @@ public class ItemServiceImpl implements ItemService {
             item.setPrice(price);
         }
         Item newItem = itemRepository.save(item);
-        if (newItem==null){
-            return CommonResponse.builder()
-                    .hasError(true)
-                    .message("Could not add Item")
-                    .content(objectMapper.writeValueAsString(newItem)).build();
-        }
         return CommonResponse.builder()
                 .hasError(false)
                 .message("Item added successfully!")

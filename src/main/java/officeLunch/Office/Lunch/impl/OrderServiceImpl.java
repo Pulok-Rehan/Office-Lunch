@@ -36,17 +36,18 @@ public class OrderServiceImpl implements OrderService {
         }
         else {
             Optional<LunchPackage> orderedLunchPackage = packageRepository.findById(orderDto.getLunchPackageId());
-            if (!orderedLunchPackage.isPresent()){
+            if (orderedLunchPackage.isEmpty()){
                 return this.universalResponseForFailedOrder();
             }
             Optional<Customers> orderingCustomer = userRepository.findById(orderDto.getCustomerId());
-            if (!orderingCustomer.isPresent()){
+            if (orderingCustomer.isEmpty()){
                 return this.universalResponseForFailedOrder();
             }
             if (orderingCustomer.get().getHasDiscount()){
                 totalAmount = orderedLunchPackage.get().getTotalPrice() - (orderedLunchPackage.get().getTotalPrice()*
                         (orderingCustomer.get().getDiscountAmount()/100)+
-                        (orderingCustomer.get().getBelongstoOrganisation()? 0 : orderedLunchPackage.get().getDiscountAmount()));
+                        (orderingCustomer.get().getBelongstoOrganisation()? 0 :
+                                orderedLunchPackage.get().getDiscountAmount()));
             }
             Order newOrder = orderRepository.save(
                     Order.builder()
@@ -85,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
         if ( orders.size() > 0){
             return CommonResponse.builder()
                     .hasError(false)
-                    .message("Order edited successfully!")
+                    .message("Order fetch successful!")
                     .content(objectMapper.writeValueAsString(orders)).build();
         }
         else {
@@ -113,13 +114,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public CommonResponse deleteOrder(long orderId) {
-        ObjectMapper objectMapper = new ObjectMapper();
         try{
             orderRepository.deleteById(orderId);
             return CommonResponse.builder()
                     .hasError(false)
                     .message("Order deleted successfully!")
-                    .content("Deleted ID is "+ String.valueOf(orderId)).build();
+                    .content("Deleted ID is "+ orderId).build();
         }
         catch (Exception e){
             e.printStackTrace();

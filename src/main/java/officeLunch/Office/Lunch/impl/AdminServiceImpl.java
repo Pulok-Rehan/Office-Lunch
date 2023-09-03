@@ -26,7 +26,7 @@ public class AdminServiceImpl implements AdminService {
             return CommonResponse.builder()
                     .message("Admin created successfully!")
                     .hasError(false)
-                    .content(objectMapper.writeValueAsString(admin)).build();
+                    .content(objectMapper.writeValueAsString(newAdmin)).build();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return CommonResponse.builder()
@@ -59,7 +59,7 @@ public class AdminServiceImpl implements AdminService {
             return CommonResponse.builder()
                     .message("Admin updated successfully!")
                     .hasError(false)
-                    .content(objectMapper.writeValueAsString(admin)).build();
+                    .content(objectMapper.writeValueAsString(updatedAdmin)).build();
         }
         catch (JsonProcessingException e){
             e.printStackTrace();

@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public CommonResponse addUser(Customers customers) throws JsonProcessingException {
+    public CommonResponse addUser(Customers customers) {
         ObjectMapper objectMapper = new ObjectMapper();
         if (customers.getOrganisation().getId() == 0){
             return this.universalCustomerFailedResponse();
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
             customers.setOrganisation(customerOrganisation.get());
             customers.setHasDiscount(customerOrganisation.get().getHasDiscount());
             customers.setDiscountAmount(customers.getDiscountAmount()>customerOrganisation.get().getDiscount()?
-                    customers.getDiscountAmount() : Double.valueOf(customerOrganisation.get().getDiscount()));
+                    customers.getDiscountAmount() : (double) customerOrganisation.get().getDiscount());
         }
         else {
             customers.setOrganisation(new Organisation());
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public CommonResponse updateUser(Customers customers) throws JsonProcessingException {
+    public CommonResponse updateUser(Customers customers) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             Customers updatedCustomers = userRepository.save(customers);
@@ -73,7 +73,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CommonResponse deleteUser(Long id) {
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
             userRepository.deleteById(id);
             return CommonResponse.builder()
