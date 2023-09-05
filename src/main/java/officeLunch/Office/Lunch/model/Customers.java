@@ -11,16 +11,18 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @Builder
 @Data
-@Table(name = "USERS")
 @Entity
+@Table(name = "CUSTOMERS")
 public class Customers {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(name = "CUSTOMERS_NAME")
     private String name;
     private Boolean hasDiscount;
     private double discountAmount;
     @ManyToOne
     private Organisation organisation;
+    @Column(columnDefinition = "true")
     private Boolean belongstoOrganisation;
 }

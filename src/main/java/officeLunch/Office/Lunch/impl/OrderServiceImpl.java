@@ -46,13 +46,13 @@ public class OrderServiceImpl implements OrderService {
             if (orderingCustomer.get().getHasDiscount()){
                 totalAmount = orderedLunchPackage.get().getTotalPrice() - (orderedLunchPackage.get().getTotalPrice()*
                         (orderingCustomer.get().getDiscountAmount()/100)+
-                        (orderingCustomer.get().getBelongstoOrganisation()? 0 :
+                        (orderingCustomer.get().getBelongstoOrganisation() ? 0 :
                                 orderedLunchPackage.get().getDiscountAmount()));
             }
             Order newOrder = orderRepository.save(
                     Order.builder()
                     .lunchPackage(orderedLunchPackage.get())
-                    .totalAmount(totalAmount == 0  ? orderedLunchPackage.get().getTotalPrice() : totalAmount)
+                    .totalAmount(totalAmount == 0 ? orderedLunchPackage.get().getTotalPrice() : totalAmount)
                     .customers(orderingCustomer.get())
                     .build());
             return CommonResponse.builder()

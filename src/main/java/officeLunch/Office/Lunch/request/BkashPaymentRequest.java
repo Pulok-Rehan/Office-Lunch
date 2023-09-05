@@ -4,7 +4,9 @@ import lombok.Data;
 
 @Data
 public class BkashPaymentRequest {
-    private String requestId;
     private String txnId;
+    private String referenceId;
     private String mobileNo;
+    private long orderId;
+    private double amount;
 }
