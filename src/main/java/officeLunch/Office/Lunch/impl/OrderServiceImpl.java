@@ -2,6 +2,7 @@ package officeLunch.Office.Lunch.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jdk.jshell.execution.Util;
 import officeLunch.Office.Lunch.dto.OrderDto;
 import officeLunch.Office.Lunch.model.Customers;
 import officeLunch.Office.Lunch.model.LunchPackage;
@@ -12,6 +13,7 @@ import officeLunch.Office.Lunch.repository.UserRepository;
 import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.OrderService;
 import org.springframework.stereotype.Service;
+import util.UtilService;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,16 +34,16 @@ public class OrderServiceImpl implements OrderService {
         ObjectMapper objectMapper = new ObjectMapper();
         double totalAmount = 0;
         if(orderDto==null){
-            return this.universalResponseForFailedOrder();
+            return UtilService.universalFailedResponse();
         }
         else {
             Optional<LunchPackage> orderedLunchPackage = packageRepository.findById(orderDto.getLunchPackageId());
             if (orderedLunchPackage.isEmpty()){
-                return this.universalResponseForFailedOrder();
+                return UtilService.universalFailedResponse();
             }
             Optional<Customers> orderingCustomer = userRepository.findById(orderDto.getCustomerId());
             if (orderingCustomer.isEmpty()){
-                return this.universalResponseForFailedOrder();
+                return UtilService.universalFailedResponse();
             }
             if (orderingCustomer.get().getHasDiscount()){
                 totalAmount = orderedLunchPackage.get().getTotalPrice() - (orderedLunchPackage.get().getTotalPrice()*
@@ -66,9 +68,7 @@ public class OrderServiceImpl implements OrderService {
     public CommonResponse editOrder(Order order) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         if (order == null){
-            return CommonResponse.builder()
-                    .message("Could not change the order")
-                    .hasError(true).build();
+            return UtilService.universalFailedResponse();
         }
         else {
             Order editedOrder = orderRepository.save(order);
@@ -90,9 +90,7 @@ public class OrderServiceImpl implements OrderService {
                     .content(objectMapper.writeValueAsString(orders)).build();
         }
         else {
-            return CommonResponse.builder()
-                    .message("Could not load orders")
-                    .hasError(true).build();
+            return UtilService.universalFailedResponse();
         }
     }
 
@@ -106,9 +104,7 @@ public class OrderServiceImpl implements OrderService {
                     .content(objectMapper.writeValueAsString(order)).build();
         }
         else {
-            return CommonResponse.builder()
-                    .message("Could not get order")
-                    .hasError(true).build();
+            return UtilService.universalFailedResponse();
         }
     }
 
@@ -123,15 +119,8 @@ public class OrderServiceImpl implements OrderService {
         }
         catch (Exception e){
             e.printStackTrace();
-            return CommonResponse.builder()
-                    .hasError(true)
-                    .message("Could not delete order!").build();
+            return UtilService.universalFailedResponse();
         }
     }
 
-    private CommonResponse universalResponseForFailedOrder(){
-        return CommonResponse.builder()
-                .hasError(true)
-                .message("Could not create order").build();
-    }
 }

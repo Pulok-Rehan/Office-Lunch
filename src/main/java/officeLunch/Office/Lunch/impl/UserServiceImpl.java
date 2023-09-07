@@ -9,6 +9,7 @@ import officeLunch.Office.Lunch.repository.UserRepository;
 import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.UserService;
 import org.springframework.stereotype.Service;
+import util.UtilService;
 
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class UserServiceImpl implements UserService {
     public CommonResponse addUser(Customers customers) {
         ObjectMapper objectMapper = new ObjectMapper();
         if (customers.getOrganisation().getId() == 0){
-            return this.universalCustomerFailedResponse();
+            return UtilService.universalFailedResponse();
         }
         Optional<Organisation> customerOrganisation = organisationRepository.findById(customers.getOrganisation().getId());
         if (customerOrganisation.isPresent()){
@@ -47,9 +48,7 @@ public class UserServiceImpl implements UserService {
                     .content(objectMapper.writeValueAsString(newuser)).build();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return CommonResponse.builder()
-                    .hasError(true)
-                    .message("Could not create User!").build();
+            return UtilService.universalFailedResponse();
         }
     }
 
@@ -65,9 +64,7 @@ public class UserServiceImpl implements UserService {
         }
         catch (JsonProcessingException e){
             e.printStackTrace();
-            return CommonResponse.builder()
-                    .hasError(true)
-                    .message("Could not update User!").build();
+            return UtilService.universalFailedResponse();
         }
     }
 
@@ -81,15 +78,7 @@ public class UserServiceImpl implements UserService {
                     .content("User deleted").build();
         }
         catch (Exception e){
-            return CommonResponse.builder()
-                    .hasError(true)
-                    .message("Could not delete User!").build();
+            return UtilService.universalFailedResponse();
         }
-    }
-    private CommonResponse universalCustomerFailedResponse(){
-        return CommonResponse.builder()
-                .hasError(true)
-                .message("Could not create User!")
-                .content(null).build();
     }
 }

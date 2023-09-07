@@ -12,6 +12,7 @@ import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.PackageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import util.UtilService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class PackageServiceImpl implements PackageService {
         ObjectMapper objectMapper = new ObjectMapper();
         List<Item> items = new ArrayList<>();
         if(packageDto.getItemIdlist().isEmpty()){
-            return this.universalPackageFailedResponse();
+            return UtilService.universalFailedResponse();
         }
         for (Long itemId: packageDto.getItemIdlist()){
             Optional<Item> itemOptional = itemRepository.findById(itemId);
@@ -90,11 +91,5 @@ public class PackageServiceImpl implements PackageService {
             discountPercentage = discount/100;
         }
         return discountPercentage;
-    }
-    private CommonResponse universalPackageFailedResponse(){
-        return CommonResponse.builder()
-                .hasError(true)
-                .message("Could not add items to the package")
-                .content(null).build();
     }
 }

@@ -10,6 +10,7 @@ import officeLunch.Office.Lunch.repository.OrganisationRepository;
 import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.OrganisationService;
 import org.springframework.stereotype.Service;
+import util.UtilService;
 
 import java.util.Optional;
 @Slf4j
@@ -28,11 +29,11 @@ public class OrganisationServiceImpl implements OrganisationService {
         ObjectMapper objectMapper = new ObjectMapper();
         if (organisation==null){
             log.info("Organisation can not be null");
-            return this.universalFailedCommonResponseForOrganisation();
+            return UtilService.universalFailedResponse();
         }
         if (organisation.getAddress().getId()==0){
             log.info("Organisation address id can not be null");
-            return this.universalFailedCommonResponseForOrganisation();
+            return UtilService.universalFailedResponse();
         }
         Optional<Address> organisationAddress = addressRepository.findById(organisation.getAddress().getId());
         if (organisationAddress.isPresent()) {
@@ -40,7 +41,7 @@ public class OrganisationServiceImpl implements OrganisationService {
             organisation.setAddress(organisationAddress.get());
         } else {
             log.info("Organisation address could not be found");
-            return this.universalFailedCommonResponseForOrganisation();
+            return UtilService.universalFailedResponse();
         }
         Organisation newOrganisation = organisationRepository.save(organisation);
         log.info("Organisation added successfully");
@@ -48,11 +49,5 @@ public class OrganisationServiceImpl implements OrganisationService {
                 .hasError(false)
                 .message("Organisation added successfully!")
                 .content(objectMapper.writeValueAsString(newOrganisation)).build();
-    }
-    private CommonResponse universalFailedCommonResponseForOrganisation(){
-        return CommonResponse.builder()
-                .hasError(true)
-                .message("Could not add organisation!")
-                .content(null).build();
     }
 }

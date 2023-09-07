@@ -32,7 +32,7 @@ public class PaymentServiceImpl implements PaymentService {
     public CommonResponse makePayment(BkashPaymentRequest bkashPaymentRequest) {
         Optional<Order> order = orderRepository.findById(bkashPaymentRequest.getOrderId());
         if (order.isEmpty()) {
-            return this.universalResponseForFailedPayment();
+            return UtilService.universalFailedResponse();
         }
         double paymentAmount = order.get().getTotalAmount();
         UtilResponse utilResponse = utilService.generateTxnAndRefId(Modules.TXNID, Modules.TXNID);
@@ -41,11 +41,5 @@ public class PaymentServiceImpl implements PaymentService {
         bkashPaymentRequest.setTxnId(utilResponse.getTxnId());
 
         return utilService.callApi(baseUrl, "makePayment", bkashPaymentRequest);
-    }
-    private CommonResponse universalResponseForFailedPayment(){
-        return CommonResponse.builder()
-                .hasError(true)
-                .message("Could not make payment")
-                .content(null).build();
     }
 }

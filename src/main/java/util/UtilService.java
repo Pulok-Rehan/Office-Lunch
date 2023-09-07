@@ -49,15 +49,20 @@ public class UtilService {
         LocalDateTime dateToday = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyymmdd");
         String timeStamp = dateToday.format(dateTimeFormatter);
-        String number = String.format("2%d", counter);
         counter = counter +1 %10000;
+        String number = String.format("2%d", counter);
         String txnId = modules+ timeStamp+ number;
         String refId = anotherModule + timeStamp + number;
         return  UtilResponse.builder()
                 .TxnId(txnId)
                 .referenceId(refId).build();
     }
-
+    public static CommonResponse universalFailedResponse(){
+        return CommonResponse.builder()
+                .hasError(true)
+                .message("Something went wrong! Please call support.")
+                .content(null).build();
+    }
     private CommonResponse failedApiCallingResponse(){
         return CommonResponse.builder()
                 .hasError(true)

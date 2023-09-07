@@ -7,6 +7,7 @@ import officeLunch.Office.Lunch.repository.AdminRepository;
 import officeLunch.Office.Lunch.response.CommonResponse;
 import officeLunch.Office.Lunch.service.AdminService;
 import org.springframework.stereotype.Service;
+import util.UtilService;
 
 import java.util.List;
 
@@ -29,9 +30,7 @@ public class AdminServiceImpl implements AdminService {
                     .content(objectMapper.writeValueAsString(newAdmin)).build();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return CommonResponse.builder()
-                    .hasError(true)
-                    .message("Could not create Admin!").build();
+            return UtilService.universalFailedResponse();
         }
     }
 
@@ -45,9 +44,7 @@ public class AdminServiceImpl implements AdminService {
                     .content("Admin deleted").build();
         }
         catch (Exception e){
-            return CommonResponse.builder()
-                    .hasError(true)
-                    .message("Could not delete Admin!").build();
+            return UtilService.universalFailedResponse();
         }
     }
 
@@ -63,9 +60,7 @@ public class AdminServiceImpl implements AdminService {
         }
         catch (JsonProcessingException e){
             e.printStackTrace();
-            return CommonResponse.builder()
-                    .hasError(true)
-                    .message("Could not update Admin!").build();
+            return UtilService.universalFailedResponse();
         }
     }
 
@@ -74,10 +69,7 @@ public class AdminServiceImpl implements AdminService {
         ObjectMapper objectMapper = new ObjectMapper();
         List<Admin> admins = adminRepository.findAll();
         if (admins.size()<1){
-            return CommonResponse.builder()
-                    .hasError(true)
-                    .message("No admins found")
-                    .content(null).build();
+            return UtilService.universalFailedResponse();
         }
         return CommonResponse.builder()
                 .hasError(false)
